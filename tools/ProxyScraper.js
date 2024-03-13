@@ -1,11 +1,7 @@
-const readline = require('readline');
 const axios = require('axios');
 const fs = require('fs');
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+const prompt = require('prompt-sync')();
 
 module.exports = {
     name: 'Proxy Scraper',
@@ -113,8 +109,8 @@ module.exports = {
         fs.writeFileSync('./proxies.txt', proxies.join('\n'));
         console.log(`\nScraped and saved ${proxies.length} proxies`.green);
 
-        rl.question('\nPress any key to return to menu'.yellow, () => {
-            rl.close();
-        });
+        prompt('\nPress any key to return to menu');
+
+        return;
     }
 };

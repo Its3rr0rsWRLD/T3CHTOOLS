@@ -1,11 +1,6 @@
-const readline = require('readline');
+const prompt = require('prompt-sync')();
 const axios = require('axios');
 const fs = require('fs');
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
 
 module.exports = {
     name: 'Proxy Checker',
@@ -14,7 +9,7 @@ module.exports = {
     number: 3,
 
     config: {
-        threads: 1500,
+        threads: 100,
         timeout: 10
     },
 
@@ -31,10 +26,11 @@ module.exports = {
         // Define a function to check a single proxy
         const checkProxy = async (proxy) => {
             try {
-                const response = await axios.get('https://www.google.com/', {
+                const response = await axios({
+                    url: 'https://roblox.con',
                     proxy: {
                         host: proxy.split(':')[0],
-                        port: parseInt(proxy.split(':')[1])
+                        port: proxy.split(':')[1]
                     },
                     timeout: self.config.timeout * 1000
                 });
@@ -62,8 +58,6 @@ module.exports = {
             fs.writeFileSync('./proxies.txt', proxies.join('\n'));
         }
 
-        rl.question('\nPress any key to return to menu'.yellow, () => {
-            rl.close();
-        });
+        prompt('\nPress any key to return to menu');
     }
 }

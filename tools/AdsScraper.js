@@ -9,7 +9,7 @@ module.exports = {
 
     config: {
         orientation: 'vertical',
-        max_runs: 100,
+        max_runs: 1000,
         threads: 1,
         webhook: '',
         send_at: 25,
@@ -119,7 +119,7 @@ module.exports = {
                     console.error('Rate limited');
                     return;
                 } else {
-                    console.error('Failed to get ad', err);
+                    console.error('Failed to get ad'.error);
                 }
             }).finally(() => {
                 runningRequests--;

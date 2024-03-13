@@ -1,13 +1,8 @@
-const readline = require('readline');
+const prompt = require('prompt-sync')();
 const process = require('process');
 const colors = require('colors');
 
 process.on('warning', () => {});
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
 
 const tools = require('./tools');
 
@@ -18,32 +13,44 @@ for (let i = 0; i < tools.length; i++) {
     }
 }
 
-
 process.removeAllListeners('warning')
 
-const promptUser = () => {
-    rl.question('Enter your choice: '.info, (choice) => {
-        switch (parseInt(choice)) {
-            case 1:
-                let file = require(`./tools/${tools[0].file}`);
-                file.execute();
+const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const promptUser = async () => {
+    const choice = prompt('Enter your choice: '.info);
+    switch (parseInt(choice)) {
+        case 1:
+            let file = require(`./tools/${tools[0].file}`);
+            await file.execute();
+            await main();
+        case 2:
+            let file2 = require(`./tools/${tools[1].file}`);
+            await file2.execute();
+            await main();
+        case 3:
+            let file3 = require(`./tools/${tools[2].file}`);
+            await file3.execute();
+            await main();
+        case 4:
+            let file4 = require(`./tools/${tools[3].file}`);
+            await file4.execute();
+            await main();
+        case 99:
+            process.exit(0);
+            break;
+        default:
+            console.clear();
+            main();
+            console.log('Invalid choice'.error);
+            sleep(3000).then(() => {
+                console.clear();
                 main();
-                break;
-            case 2:
-                let file2 = require(`./tools/${tools[1].file}`);
-                file2.execute();
-                main();
-                break;
-            case 3:
-                let file3 = require(`./tools/${tools[2].file}`);
-                file3.execute();
-                main();
-                break;
-            default:
-                promptUser();
-                main();
-        }
-    });
+            });
+            break;
+    }
 };
 
 const main = () => {
@@ -65,9 +72,16 @@ const main = () => {
         }
     }
 
+    console.log('99  ~   Exit || Exit the program'.info);
+
     console.log('\n');
 
     promptUser();
+
+    process.on('SIGINT', () => {
+        console.log('Program forcefully closed.'.error);
+        process.exit(0);
+    });
 };
 
 main();
