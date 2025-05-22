@@ -1,36 +1,32 @@
-T3CHTOOLS Non-Commercial License (TNCL) v1.0
+T3CHTOOLS Non-Commercial License (TNCL) Version 2.0
 © 2025 Its3rr0rsWRLD
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to use,
-copy, modify, and merge the Software **for personal, educational, and internal
-projects only**, subject to the following conditions:
+1. Definitions
+   1.1 “Software” means the source code, object code, documentation and any modifications or derivative works licensed hereunder.
+   1.2 “You” (or “Licensee”) means any person or entity exercising rights granted by this License.
+   1.3 “Commercial Use” means any distribution, sale, sublicensing or use of the Software (or derivatives) by or for the benefit of any for-profit entity, or any use intended for revenue generation (directly or indirectly), whether internal or external.
 
-1. **Attribution**  
-   You must give appropriate credit to the original author (·Its3rr0rsWRLD·), 
-   provide a link to the repository, and indicate if changes were made.  
-   This can be in your project’s README or other documentation.
+2. Grant of License
+   Subject to the terms below, Its3rr0rsWRLD hereby grants You a perpetual, worldwide, non-exclusive, royalty-free license to use, copy, modify and merge the Software solely for personal, educational or non-commercial internal projects.
 
-2. **Non-Commercial Use Only**  
-   You may not use the Software, in whole or in part, for any commercial purpose,
-   including but not limited to: selling, sublicensing, distributing for
-   profit, or embedding in a product that is sold or monetized, **unless you
-   obtain prior written permission** from the author.
+3. Conditions
+   3.1 Attribution
+   • You must retain the copyright notice and this License in all copies and substantial portions of the Software.
+   • You must give clear credit to Its3rr0rsWRLD, include a link to the original repository, and indicate if changes were made.
+   3.2 Non-Commercial Use Only
+   • Any use of the Software that qualifies as Commercial Use is strictly prohibited without prior written permission from Its3rr0rsWRLD.
+   • “Internal Use” by a for-profit organization constitutes Commercial Use unless explicit permission is granted.
+   3.3 Derivative Works
+   • You may create derivative works, but all derivatives must also be licensed under TNCL v2.0 or a later version released by the author.
+   • You may not relicense derivatives under any stricter or more permissive commercial license.
+   3.4 Patent Grant
+   • Its3rr0rsWRLD grants You a perpetual, worldwide, non-exclusive, royalty-free, irrevocable license under their essential patent claims to make, use, sell, offer for sale and distribute the Software.
+   3.5 No Additional Restrictions
+   • You may not impose any further legal or technological restrictions on the Software beyond those required to satisfy the Attribution and Non-Commercial Use conditions.
 
-3. **No Additional Restrictions**  
-   You may not impose any further legal or technological restrictions on the
-   Software that would prevent others from complying with this license.
+4. Disclaimer & Limitation of Liability
+   THE SOFTWARE IS PROVIDED “AS IS,” WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-4. **Disclaimer of Warranty**  
-   THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-   AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-   ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-5. **Limitation of Liability**  
-   Under no circumstances and under no legal theory, whether in tort (including
-   negligence), contract, or otherwise, shall the author be liable to anyone
-   for any indirect, special, incidental, or consequential damages of any
-   character arising as a result of the use of this Software.
+5. Termination
+   This License and the rights granted hereunder will terminate automatically upon any breach by You. If You cease all infringing use and cure the breach within thirty (30) days of receiving written notice, the author may, at their discretion, reinstate the license.
