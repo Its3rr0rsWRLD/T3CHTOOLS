@@ -6,7 +6,6 @@ module.exports = {
     name: 'Proxy Checker',
     description: 'Check proxies',
     delete_failed_proxies: true,
-    number: 3,
 
     config: {
         threads: 100,

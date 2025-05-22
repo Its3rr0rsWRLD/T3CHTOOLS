@@ -6,7 +6,6 @@ const prompt = require('prompt-sync')();
 module.exports = {
     name: 'Proxy Scraper',
     description: 'Scrape proxies on websites',
-    number: 2,
 
     async execute() {
         const urls = [
