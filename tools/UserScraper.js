@@ -14,7 +14,7 @@ module.exports = {
         batchSize: 250,
         limit: 1000,
         threads: 50,
-        savePath: './users_dataset.jsonl'
+        savePath: './datasets/users_dataset.jsonl'
     },
 
     async execute() {
@@ -28,12 +28,15 @@ module.exports = {
         const threads = Number(config.threads || 5);
         const batchSize = Number(config.batchSize || 25);
         const flushLimit = Math.max(1, Math.floor(batchSize / 2));
-        const savePath = path.resolve(__dirname, '..', config.savePath || 'users_dataset.jsonl');
+        const savePath = path.resolve(__dirname, '..', config.savePath || './datasets/users_dataset.jsonl');
 
         if (!Number.isInteger(startId) || startId <= 0) {
             console.log('Invalid startId in config.'.red);
             return;
         }
+
+        const saveDir = path.dirname(savePath);
+        if (!fs.existsSync(saveDir)) fs.mkdirSync(saveDir, { recursive: true });
 
         const ids = Array.from({ length: limit }, (_, i) => startId + i);
         const seenIds = new Set();

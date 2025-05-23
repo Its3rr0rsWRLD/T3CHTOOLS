@@ -8,3 +8,5 @@ tools/ClothingScraper.js
 cookies.txt
 config.json
 users_dataset.json
+*.jsonl
+proxies.txt

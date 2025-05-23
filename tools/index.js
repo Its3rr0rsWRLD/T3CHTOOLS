@@ -10,11 +10,24 @@ if (fs.existsSync(configPath)) {
 process.on('warning', () => {});
 
 function sortFiles() {
-    let files = fs.readdirSync('tools').filter(file => file.endsWith('.js'));
+    const files = fs.readdirSync('tools').filter(file => file.endsWith('.js'));
 
     let anyUpdated = false;
+    const currentToolNames = new Set();
+    let toolIndex = 1;
+
     const toolList = files.map(file => {
-        let tool = require(`./${file}`);
+        let tool;
+        try {
+            tool = require(`./${file}`);
+        } catch {
+            return null;
+        }
+
+        if (!tool.name || !tool.description || typeof tool.execute !== 'function') return null;
+
+        currentToolNames.add(tool.name);
+
         const defaultConfig = tool.config || {};
         const toolConfig = globalConfig[tool.name] || {};
         let updated = false;
@@ -26,26 +39,33 @@ function sortFiles() {
             }
         }
 
-        if (updated) {
+        if (updated || !globalConfig[tool.name]) {
             anyUpdated = true;
+            globalConfig[tool.name] = toolConfig;
         }
 
-        globalConfig[tool.name] = toolConfig;
         tool.config = toolConfig;
 
         return {
             name: tool.name,
             description: tool.description,
-            number: tool.number,
+            number: toolIndex++,
             file: file
         };
-    });
+    }).filter(Boolean);
 
-    if (Object.keys(globalConfig).length) {
+    for (let name in globalConfig) {
+        if (!currentToolNames.has(name)) {
+            delete globalConfig[name];
+            anyUpdated = true;
+        }
+    }
+
+    if (anyUpdated) {
         fs.writeFileSync(configPath, JSON.stringify(globalConfig, null, 4));
     }
 
-    return toolList.sort((a, b) => a.number - b.number);
+    return toolList;
 }
 
 function cookies() {

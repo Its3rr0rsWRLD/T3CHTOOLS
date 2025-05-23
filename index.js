@@ -63,7 +63,7 @@ const main = () => {
     promptUser();
 
     process.on('SIGINT', () => {
-        console.log('Program forcefully closed.'.error);
+        console.log('Program closed forcefully, goodbye!'.error);
         process.exit(0);
     });
 };

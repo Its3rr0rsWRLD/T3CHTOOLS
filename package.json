@@ -5,6 +5,7 @@
     "colors": "^1.4.0",
     "fast-xml-parser": "^5.2.3",
     "gm": "^1.25.0",
+    "https-proxy-agent": "^7.0.6",
     "progress": "^2.0.3",
     "prompt-sync": "^4.2.0",
     "split-string": "^6.1.0",
