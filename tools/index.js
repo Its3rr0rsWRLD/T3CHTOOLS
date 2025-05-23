@@ -5,6 +5,13 @@ let globalConfig = {};
 
 if (fs.existsSync(configPath)) {
     globalConfig = JSON.parse(fs.readFileSync(configPath));
+} else {
+    globalConfig = {
+        index: {
+            printColor: "red"
+        }
+    };
+    fs.writeFileSync(configPath, JSON.stringify(globalConfig, null, 4));
 }
 
 process.on('warning', () => {});
@@ -55,7 +62,7 @@ function sortFiles() {
     }).filter(Boolean);
 
     for (let name in globalConfig) {
-        if (!currentToolNames.has(name)) {
+        if (name !== 'index' && !currentToolNames.has(name)) {
             delete globalConfig[name];
             anyUpdated = true;
         }

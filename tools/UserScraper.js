@@ -7,7 +7,7 @@ const globalConfig = require('../config.json');
 
 module.exports = {
     name: 'User Scraper',
-    description: 'Scrape public data about users by ID using a threaded GET approach',
+    description: 'Scrape all public data about users by ID using a threaded GET approach',
 
     config: {
         startId: 1,
@@ -52,7 +52,7 @@ module.exports = {
 
         const fetch = (hostname, path) => {
             return new Promise(resolve => {
-                const options = { hostname, path, method: 'GET', timeout: 5000 };
+                const options = { hostname, path, method: 'GET', timeout: 15000 };
                 const req = https.request(options, res => {
                     let data = '';
                     res.on('data', chunk => data += chunk);
@@ -82,22 +82,25 @@ module.exports = {
             }
 
             const base = await fetch('users.roblox.com', `/v1/users/${userId}`);
-            if (!base || base.error) {
-                console.log(`[✘] ${userId} - ${base?.error || 'No response'}`.gray);
+            if (!base || base.error || !base.name) {
+                console.log(`[✘] ${userId} - ${base?.error || 'Invalid user or banned'}`.gray);
                 return;
             }
 
-            if (!base.name) {
-                console.log(`[✘] ${userId} - Deleted or banned`.gray);
-                return;
-            }
-
-            const [profile, avatar, created, badges, premium] = await Promise.all([
+            const [profile, avatar, usernames, badges, premium, friends, followers, followings, groups, games, favorites, status, headshot] = await Promise.all([
                 fetch('users.roblox.com', `/v1/users/${userId}/profile`),
                 fetch('avatar.roblox.com', `/v1/users/${userId}/avatar`),
                 fetch('users.roblox.com', `/v1/users/${userId}/username-history?limit=50`),
                 fetch('accountinformation.roblox.com', `/v1/users/${userId}/roblox-badges`),
-                fetch('premiumfeatures.roblox.com', `/v1/users/${userId}/validate-membership`)
+                fetch('premiumfeatures.roblox.com', `/v1/users/${userId}/validate-membership`),
+                fetch('friends.roblox.com', `/v1/users/${userId}/friends/count`),
+                fetch('friends.roblox.com', `/v1/users/${userId}/followers/count`),
+                fetch('friends.roblox.com', `/v1/users/${userId}/followings/count`),
+                fetch('groups.roblox.com', `/v2/users/${userId}/groups/roles`),
+                fetch('games.roblox.com', `/v2/users/${userId}/games?accessFilter=2&sortOrder=Asc&limit=10`),
+                fetch('catalog.roblox.com', `/v1/favorites/users/${userId}/favorites?assetTypeId=1&limit=10`),
+                fetch('users.roblox.com', `/v1/users/${userId}/status`),
+                fetch('thumbnails.roblox.com', `/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`)
             ]);
 
             const record = {
@@ -107,9 +110,17 @@ module.exports = {
                 created: base.created,
                 description: profile?.description || '',
                 avatar: avatar || {},
-                pastUsernames: created?.data || [],
+                pastUsernames: usernames?.data || [],
                 badges: badges || [],
-                isPremium: premium === true
+                isPremium: premium === true,
+                friendCount: friends?.count || 0,
+                followerCount: followers?.count || 0,
+                followingCount: followings?.count || 0,
+                groups: groups?.data || [],
+                games: games?.data || [],
+                favorites: favorites?.data || [],
+                status: status?.status || '',
+                headshot: headshot?.data?.[0]?.imageUrl || ''
             };
 
             buffer.push(record);
@@ -133,4 +144,4 @@ module.exports = {
 
         console.log(`\nScraping complete. Data saved to ${savePath}`.green);
     }
-}
+};
