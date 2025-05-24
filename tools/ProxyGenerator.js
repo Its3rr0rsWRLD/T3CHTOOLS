@@ -11,12 +11,13 @@ module.exports = {
     description: 'Generates and downloads proxies via Webshare.io using captcha bypass and threading',
 
     config: {
-        proxyless: true,
+        useProxies: true,
         captcha_apikey: '',
         captcha_service: 'capsolver',
         proxy_file: 'proxies.txt',
         threads: 5,
-        proxy_format: 'ip:port:user:pass'
+        proxy_format: 'ip:port:user:pass',
+        outputFile: 'output.txt',
     },
 
     async execute() {
@@ -28,7 +29,7 @@ module.exports = {
             return;
         }
 
-        const proxies = (config.proxyless || !config.proxy_file)
+        const proxies = (!config.useProxies || !config.proxy_file)
             ? []
             : (fs.existsSync(config.proxy_file) ? fs.readFileSync(config.proxy_file, 'utf8').split('\n').filter(Boolean) : []);
 
@@ -111,7 +112,10 @@ module.exports = {
             });
 
             const proxies = response.data.results || [];
-            const outputPath = path.resolve(__dirname, '../proxies.txt');
+            const outputPath = path.resolve(__dirname, '../', config.outputFile);
+            if (!fs.existsSync(outputPath)) {
+                fs.writeFileSync(outputPath, '', 'utf8');
+            }
             const stream = fs.createWriteStream(outputPath, { flags: 'a' });
 
             proxies.forEach(p => {
@@ -123,7 +127,7 @@ module.exports = {
                 } else {
                     proxyString = `${p.proxy_address}:${p.port}:${p.username}:${p.password}`;
                 }
-                stream.write(proxyString + '\n');
+                stream.write('\n' + proxyString + '\n');
             });
 
             stream.end();
