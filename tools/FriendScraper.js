@@ -16,7 +16,8 @@ module.exports = {
         depth: 2,
         threads: 5,
         savePath: './datasets/friends_dataset.jsonl',
-        proxy: ''
+        useProxies: false,
+        proxyFile: 'proxies.txt',
     },
 
     async execute() {
@@ -28,7 +29,21 @@ module.exports = {
         const maxDepth = Number(config.depth || 1);
         const threads = Number(config.threads || 5);
         const savePath = path.resolve(__dirname, '..', config.savePath || './datasets/friends_dataset.jsonl');
-        const proxy = config.proxy || null;
+        const useProxies = config.useProxies;
+        const proxyFile = path.resolve(__dirname, '..', config.proxyFile);
+
+        let proxies = [];
+        if (useProxies && fs.existsSync(proxyFile)) {
+            proxies = fs.readFileSync(proxyFile, 'utf-8').split('\n').map(p => p.trim()).filter(Boolean);
+        }
+
+        let proxyIndex = 0;
+        const getNextProxy = () => {
+            if (!useProxies || proxies.length === 0) return null;
+            const proxy = proxies[proxyIndex % proxies.length];
+            proxyIndex++;
+            return proxy;
+        };
 
         const saveDir = path.dirname(savePath);
         if (!fs.existsSync(saveDir)) fs.mkdirSync(saveDir, { recursive: true });
@@ -40,7 +55,6 @@ module.exports = {
         let totalFriends = 0;
         let processedUsers = 0;
         let completed = false;
-        let rateLimitHit = false;
         let lastStatus = '';
         let lastPrintedRateLimit = false;
 
@@ -64,23 +78,22 @@ module.exports = {
 
         const fetchFriends = (userId) => {
             return new Promise(resolve => {
+                const proxy = getNextProxy();
                 const options = {
                     hostname: 'friends.roblox.com',
                     path: `/v1/users/${userId}/friends`,
                     method: 'GET',
                     timeout: 5000,
-                    agent: proxy ? new HttpsProxyAgent(proxy) : undefined
+                    agent: proxy ? new HttpsProxyAgent(`http://${proxy}`) : undefined
                 };
 
                 const req = https.request(options, res => {
                     let data = '';
                     res.on('data', chunk => data += chunk);
                     res.on('end', () => {
-                        if (res.statusCode === 429) {
-                            if (!lastPrintedRateLimit) {
-                                console.log('\n[!] Rate limit hit. Slowing down...'.yellow);
-                                lastPrintedRateLimit = true;
-                            }
+                        if (res.statusCode === 429 && !lastPrintedRateLimit) {
+                            console.log('\n[!] Rate limit hit. Slowing down...'.yellow);
+                            lastPrintedRateLimit = true;
                         } else {
                             lastPrintedRateLimit = false;
                         }
@@ -103,7 +116,7 @@ module.exports = {
 
         const logStatus = () => {
             const elapsed = (Date.now() - startTime) / 1000;
-            const eta = processedUsers ? (elapsed / processedUsers) * (queue.length + processedUsers - processedUsers) : 0;
+            const eta = processedUsers ? (elapsed / processedUsers) * (queue.length) : 0;
             const etaString = completed ? 'done' : `${Math.round(eta)}s remaining`;
             const status = `[STATUS] Processed: ${processedUsers} | Friends Found: ${totalFriends} | ETA: ${etaString}`.cyan;
 
@@ -155,4 +168,4 @@ module.exports = {
 
         console.log(`\nFriend scraping complete. Data saved to ${savePath}`.green);
     }
-} 
+}

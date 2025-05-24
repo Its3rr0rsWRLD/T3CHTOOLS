@@ -1,74 +1,106 @@
-const prompt = require('prompt-sync')();
-const axios = require('axios');
 const fs = require('fs');
-const HttpsProxyAgent = require('https-proxy-agent');
+const path = require('path');
+const axios = require('axios');
+const { HttpsProxyAgent } = require('https-proxy-agent');
 const colors = require('colors');
+const prompt = require('prompt-sync')();
 
 module.exports = {
     name: 'Proxy Checker',
-    description: 'Check proxies',
-    delete_failed_proxies: true,
-
+    description: 'Validate proxies via ipify, supports ip:port and ip:port:user:pass',
     config: {
-        threads: 100,
-        timeout: 10
+        threads: 50,
+        timeout: 10,
+        delete_failed: true,
+        proxyFile: './proxies.txt'
     },
 
     async execute() {
-        let self = module.exports;
-        let proxies = fs.readFileSync('./proxies.txt', 'utf8')
-            .split('\n')
-            .map(proxy => proxy.trim())
-            .filter(proxy => proxy && /^(\d{1,3}\.){3}\d{1,3}:\d{2,5}(:\w+:\w+)?$/.test(proxy));
+        const configPath = path.resolve(__dirname, '../config.json');
+        let globalConfig = {};
+        if (fs.existsSync(configPath)) {
+            globalConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        }
+        const cfg = globalConfig['Proxy Checker'] || this.config;
+        const threads = Number(cfg.threads);
+        const timeout = Number(cfg.timeout) * 1000;
+        const deleteFailed = cfg.delete_failed !== false;
+        const filePath = path.resolve(__dirname, '..', cfg.proxyFile);
 
-        console.log(`\n[+] Loaded ${proxies.length} proxies`.info);
-        console.log(`[+] Checking proxies...`.info);
-
-        let working = [];
-        let workingProxies = 0;
-        let failedProxies = 0;
-
-        const parseProxy = (proxy) => {
-            const parts = proxy.split(':');
-            if (parts.length === 4) {
-                return { ip: parts[0], port: parts[1], auth: `${parts[2]}:${parts[3]}` };
-            } else {
-                return { ip: parts[0], port: parts[1] };
-            }
-        };
-
-        const checkProxy = async (proxy) => {
-            const parsed = parseProxy(proxy);
-            const proxyUrl = parsed.auth ? `http://${parsed.auth}@${parsed.ip}:${parsed.port}` : `http://${parsed.ip}:${parsed.port}`;
-
-            try {
-                const agent = new HttpsProxyAgent(proxyUrl);
-                await axios.get('https://api.ipify.org', {
-                    httpsAgent: agent,
-                    timeout: self.config.timeout * 1000
-                });
-                workingProxies++;
-                working.push(proxy);
-            } catch (error) {
-                failedProxies++;
-                console.log(`[✘] ${proxy} failed: ${error.code || error.message}`.red);
-            }
-
-            console.clear();
-            console.log(`[+] Working proxies: ${workingProxies} || Failed proxies: ${failedProxies}`.info);
-        };
-
-        let index = 0;
-        while (index < proxies.length) {
-            const tasks = [];
-            for (let i = 0; i < self.config.threads && index < proxies.length; i++) {
-                tasks.push(checkProxy(proxies[index++]));
-            }
-            await Promise.all(tasks);
+        if (!fs.existsSync(filePath)) {
+            console.log('No proxies.txt found'.red);
+            return;
         }
 
-        if (self.delete_failed_proxies) {
-            fs.writeFileSync('./proxies.txt', working.join('\n'));
+        const raw = fs.readFileSync(filePath, 'utf8');
+        const proxies = raw.split(/\r?\n/)
+            .map(l => l.trim())
+            .filter(Boolean)
+            .filter(p => /^\d{1,3}(?:\.\d{1,3}){3}:\d{2,5}(?::\w+:\w+)?$/.test(p));
+        const total = proxies.length;
+
+        let working = [];
+        let failedCount = 0;
+        let completed = 0;
+        let index = 0;
+
+        const parseProxy = (str) => {
+            const parts = str.split(':');
+            if (parts.length === 4) {
+                return `http://${parts[2]}:${parts[3]}@${parts[0]}:${parts[1]}`;
+            }
+            return `http://${parts[0]}:${parts[1]}`;
+        };
+
+        const showStatus = () => {
+            console.clear();
+            console.log(
+                `[Checking] ${completed}/${total} | Working: ${working.length} | Failed: ${failedCount}`.info
+            );
+        };
+
+        console.log(`\nLoaded ${total} proxies`.info);
+        showStatus();
+
+        const timeoutPromise = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms));
+
+        const worker = async () => {
+            while (true) {
+                let proxyStr;
+                if (index >= total) return;
+                proxyStr = proxies[index++];
+
+                const proxyUrl = parseProxy(proxyStr);
+
+                try {
+                    await Promise.race([
+                        axios.get('https://api.ipify.org?format=json', {
+                            httpAgent: new HttpsProxyAgent(proxyUrl),
+                            httpsAgent: new HttpsProxyAgent(proxyUrl),
+                            timeout
+                        }),
+                        timeoutPromise(timeout + 2000)
+                    ]);
+                    working.push(proxyStr);
+                } catch {
+                    failedCount++;
+                }
+
+                completed++;
+                showStatus();
+            }
+        };
+
+        await Promise.all(
+            Array.from({ length: threads }, () => worker())
+        );
+
+        showStatus();
+        console.log('\nDone.'.green);
+
+        if (deleteFailed) {
+            fs.writeFileSync(filePath, working.join('\n'), 'utf8');
+            console.log(`Saved ${working.length} working proxies.`.green);
         }
 
         prompt('\nPress any key to return to menu');

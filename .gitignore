@@ -10,3 +10,4 @@ config.json
 users_dataset.json
 *.jsonl
 proxies.txt
+tools/CookieGenerator.js

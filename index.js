@@ -2,7 +2,7 @@ const prompt = require('prompt-sync')();
 const process = require('process');
 const colors = require('colors');
 const fs = require('fs');
-const inquirer = require('inquirer');
+const { exec } = require('child_process');
 const version = require('./version.js');
 
 process.on('warning', () => {});
@@ -21,26 +21,18 @@ process.removeAllListeners('warning');
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function editConfig(configObj) {
-    const keys = Object.keys(configObj);
-    for (const key of keys) {
-        const value = configObj[key];
-        if (typeof value === 'object' && !Array.isArray(value)) {
-            console.log(`\nEditing section: ${key}`.yellow);
-            await editConfig(configObj[key]);
-        } else {
-            const response = await inquirer.prompt([{
-                type: 'input',
-                name: 'newValue',
-                message: `Edit "${key}" [current: ${value}]`,
-                default: value
-            }]);
-            configObj[key] = response.newValue;
-        }
+const openEditor = () => {
+    const platform = process.platform;
+    const configPath = './config.json';
+
+    if (platform === 'win32') {
+        exec(`start notepad ${configPath}`);
+    } else if (platform === 'darwin') {
+        exec(`open -e ${configPath}`);
+    } else {
+        exec(`xdg-open ${configPath}`);
     }
-    fs.writeFileSync('./config.json', JSON.stringify(config, null, 4));
-    console.log('\nConfig updated successfully.'.green);
-}
+};
 
 const promptUser = async () => {
     const choice = prompt('Enter your choice: '[color]);
@@ -53,7 +45,8 @@ const promptUser = async () => {
         process.exit(0);
     } else if (choice.toLowerCase() === 'c') {
         console.clear();
-        await editConfig(config);
+        openEditor();
+        console.log('Opened config.json in your system editor.'.info);
         console.log('\nPress any key to return to the menu...'.info);
         prompt();
         console.clear();
@@ -76,18 +69,18 @@ const main = () => {
         warn: 'yellow'
     });
 
-    let startmsg = `Version ${version} | discord.gg/T83PmmeepV | Made by @Its3rr0rsWRLD`.info;
+    let startmsg = `${' '.repeat(5)}Version ${version} | discord.gg/T83PmmeepV | Made by @Its3rr0rsWRLD`.info;
 
     console.log(`\n
- /$$$$$$$$ /$$$$$$   /$$$$$$  /$$   /$$ /$$$$$$$$ /$$$$$$   /$$$$$$  /$$        /$$$$$$ 
-|__  $$__//$$__  $$ /$$__  $$| $$  | $$|__  $$__//$$__  $$ /$$__  $$| $$       /$$__  $$
-   | $$  |__/  \\ $$| $$  \\__/| $$  | $$   | $$  | $$  \\ $$| $$  \\ $$| $$      | $$  \\__/
-   | $$     /$$$$$/| $$      | $$$$$$$$   | $$  | $$  | $$| $$  | $$| $$      |  $$$$$$ 
-   | $$    |___  $$| $$      | $$__  $$   | $$  | $$  | $$| $$  | $$| $$       \\____  $$
-   | $$   /$$  \\ $$| $$    $$| $$  | $$   | $$  | $$  | $$| $$  | $$| $$       /$$  \\ $$
-   | $$  |  $$$$$$/|  $$$$$$/| $$  | $$   | $$  |  $$$$$$/|  $$$$$$/| $$$$$$$$|  $$$$$$/
-   |__/   \\______/  \\______/ |__/  |__/   |__/   \\______/  \\______/ |________/ \\______/ 
-
+         /$$$$$$$$ /$$$$$$   /$$$$$$  /$$   /$$ /$$$$$$$$ /$$$$$$   /$$$$$$  /$$        /$$$$$$ 
+        |__  $$__//$$__  $$ /$$__  $$| $$  | $$|__  $$__//$$__  $$ /$$__  $$| $$       /$$__  $$
+           | $$  |__/  \\ $$| $$  \\__/| $$  | $$   | $$  | $$  \\ $$| $$  \\ $$| $$      | $$  \\__/
+           | $$     /$$$$$/| $$      | $$$$$$$$   | $$  | $$  | $$| $$  | $$| $$      |  $$$$$$ 
+           | $$    |___  $$| $$      | $$__  $$   | $$  | $$  | $$| $$  | $$| $$       \\____  $$
+           | $$   /$$  \\ $$| $$    $$| $$  | $$   | $$  | $$  | $$| $$  | $$| $$       /$$  \\ $$
+           | $$  |  $$$$$$/|  $$$$$$/| $$  | $$   | $$  |  $$$$$$/|  $$$$$$/| $$$$$$$$|  $$$$$$/
+           |__/   \\______/  \\______/ |__/  |__/   |__/   \\______/  \\______/ |________/ \\______/ 
+        
                 ${startmsg}\n`.info);
 
     const maxNameLength = Math.max(...tools.map(tool => tool.name.length)) + 5;
@@ -101,13 +94,15 @@ const main = () => {
         const desc = tool.description.padEnd(maxDescLength, ' ');
         console.log(`| ${String(tool.number).padEnd(2)} ~ ${name}|| ${desc} |`.info);
     });
-    console.log(`| 0 ~ ${'Exit'.padEnd(maxNameLength)} || Exit the program${' '.repeat(maxDescLength - 'Exit the program'.length)} |`.info);
+    console.log(`| 0  ~ ${'Exit'.padEnd(maxNameLength)}|| Exit the program${' '.repeat(maxDescLength - 'Exit the program'.length)} |`.info);
     console.log('─'.repeat(totalWidth).info);
-    console.log(`| C ~ ${'Config'.padEnd(maxNameLength)} || Edit the config file${' '.repeat(maxDescLength - 'Edit the config file'.length)} |`.info);
+    console.log(`| C  ~ ${'Config'.padEnd(maxNameLength)}|| Edit the config file${' '.repeat(maxDescLength - 'Edit the config file'.length)} |`.info);
     console.log('─'.repeat(totalWidth).info);
 
     console.log('\n');
-    promptUser();
+    (async () => {
+        await promptUser();
+    })();
 
     process.on('SIGINT', () => {
         console.log('Program closed forcefully, goodbye!'.error);

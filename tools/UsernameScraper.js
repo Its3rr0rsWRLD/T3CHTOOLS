@@ -5,7 +5,7 @@ const colors = require('colors');
 const globalConfig = require('../config.json');
 
 module.exports = {
-    name: 'Username Sniper',
+    name: 'Username Scraper',
     description: 'Check all possible usernames of a specific length for availability',
 
     config: {
