@@ -1,32 +1,55 @@
-T3CHTOOLS Non-Commercial License (TNCL) Version 2.0
+T3CHTOOLS Non-Commercial License (TNCL) v2.0 Revised
 © 2025 Its3rr0rsWRLD
 
 1. Definitions
-   1.1 “Software” means the source code, object code, documentation and any modifications or derivative works licensed hereunder.
+   1.1 “Software” means the source code, object code, documentation, and any modifications or derivative works licensed hereunder.
    1.2 “You” (or “Licensee”) means any person or entity exercising rights granted by this License.
-   1.3 “Commercial Use” means any distribution, sale, sublicensing or use of the Software (or derivatives) by or for the benefit of any for-profit entity, or any use intended for revenue generation (directly or indirectly), whether internal or external.
+   1.3 “Commercial Use” means:
+   • Any distribution, sale, sublicensing, or provision of the Software (or Derivative Works) for the benefit of any for‑profit entity.
+   • Any use of the Software in a service‑oriented architecture or software‑as‑a‑service (SaaS) offering.
+   • Any internal use by a for‑profit organization unless explicit written permission is obtained.
+   1.4 “Derivative Works” means any work based upon the Software that includes or is derived from it.
+   1.5 “Distribute” means to publish, share, sell, sublicense, network‑host, or otherwise make available the Software to third parties, in source, object, or binary form.
 
 2. Grant of License
-   Subject to the terms below, Its3rr0rsWRLD hereby grants You a perpetual, worldwide, non-exclusive, royalty-free license to use, copy, modify and merge the Software solely for personal, educational or non-commercial internal projects.
+   Its3rr0rsWRLD hereby grants You a perpetual, worldwide, non‑exclusive, royalty‑free license to use, copy, modify, merge, distribute, publish, and otherwise make available the Software solely for personal, educational, or non‑commercial internal projects.
 
 3. Conditions
    3.1 Attribution
-   • You must retain the copyright notice and this License in all copies and substantial portions of the Software.
+   • You must retain the copyright notice and this License in all copies and substantial portions of the Software, including in source, object, and binary forms.
+   • For distributed or embedded/bundled binaries or minimized code, you must include the full notice in prominent documentation or an "About" screen.
    • You must give clear credit to Its3rr0rsWRLD, include a link to the original repository, and indicate if changes were made.
-   3.2 Non-Commercial Use Only
-   • Any use of the Software that qualifies as Commercial Use is strictly prohibited without prior written permission from Its3rr0rsWRLD.
-   • “Internal Use” by a for-profit organization constitutes Commercial Use unless explicit permission is granted.
+
+   3.2 Non‑Commercial Use Only
+   • Any Commercial Use as defined above is strictly prohibited without prior written permission from Its3rr0rsWRLD.
+   • Internal use by a for‑profit entity constitutes Commercial Use unless explicit written permission is granted.
+
    3.3 Derivative Works
-   • You may create derivative works, but all derivatives must also be licensed under TNCL v2.0 or a later version released by the author.
-   • You may not relicense derivatives under any stricter or more permissive commercial license.
+   • You may create Derivative Works, but all such works must be licensed under TNCL v2.0 only, and may not be relicensed under any more permissive or more restrictive terms.
+
    3.4 Patent Grant
-   • Its3rr0rsWRLD grants You a perpetual, worldwide, non-exclusive, royalty-free, irrevocable license under their essential patent claims to make, use, sell, offer for sale and distribute the Software.
+   • Its3rr0rsWRLD grants You a perpetual, worldwide, non‑exclusive, royalty‑free, irrevocable license under all patent claims owned or controlled by the author covering the Software as distributed, to make, use, sell, offer for sale, and distribute the Software and Derivative Works.
+
    3.5 No Additional Restrictions
-   • You may not impose any further legal or technological restrictions on the Software beyond those required to satisfy the Attribution and Non-Commercial Use conditions.
+   • You may not impose any further legal or technological restrictions on the Software or its recipients, directly or indirectly, beyond those required by this License.
 
-4. Disclaimer & Limitation of Liability
-   THE SOFTWARE IS PROVIDED “AS IS,” WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+   3.6 Internal Use Audit and Reporting
+   • Any for‑profit organization using the Software internally must self‑certify compliance with this License annually and make records available for audit upon written request by Its3rr0rsWRLD.
 
-5. Termination
-   This License and the rights granted hereunder will terminate automatically upon any breach by You. If You cease all infringing use and cure the breach within thirty (30) days of receiving written notice, the author may, at their discretion, reinstate the license.
+4. Compliance with Laws
+   You are solely responsible for compliance with all applicable export control, encryption, privacy, and other laws governing use of the Software.
+
+5. Disclaimer of Warranty
+   THE SOFTWARE IS PROVIDED “AS IS,” WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NONINFRINGEMENT.
+
+6. Limitation of Liability
+   IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+7. Termination
+   This License and the rights granted hereunder will terminate automatically upon any breach by You. The author will send written notice of breach and allow a thirty (30) day cure period. If You cure the breach within that period, the license may be reinstated at the author’s discretion.
+
+8. Governing Law and Severability
+   This License is governed by the laws of the State of \[Your State/Province], \[Your Country]. If any provision of this License is held invalid or unenforceable, the remaining provisions shall continue in full force and effect.
+
+9. Export Control
+   You acknowledge that the Software may be subject to export control laws and that You are responsible for obtaining any required licenses to export, re‑export, or import the Software.
